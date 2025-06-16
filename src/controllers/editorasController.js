@@ -1,4 +1,4 @@
-import Editora from "../models/editora.js";
+import Editora from '../models/editora.js';
 
 class EditorasController {
   static listarEditoras = async (_, res) => {
@@ -30,12 +30,12 @@ class EditorasController {
     const editora = new Editora(body);
     try {
       if (Object.keys(body).length === 0) {
-        throw new Error("corpo da requisição vazio");
+        throw new Error('corpo da requisição vazio');
       }
       await editora.salvar(editora);
-      return res.status(201).json({ message: "editora criada" });
+      return res.status(201).json({ message: 'editora criada' });
     } catch (err) {
-      if (err.message === "corpo da requisição vazio") {
+      if (err.message === 'corpo da requisição vazio') {
         return res.status(400).json({ message: err.message });
       }
       return res.status(500).json(err.message);
@@ -56,7 +56,7 @@ class EditorasController {
       const resposta = await novaEditora.salvar(novaEditora);
       return res
         .status(200)
-        .json({ message: "editora atualizada", content: resposta });
+        .json({ message: 'editora atualizada', content: resposta });
     } catch (err) {
       return res.status(500).json(err.message);
     }
@@ -71,7 +71,7 @@ class EditorasController {
           .status(404)
           .json({ message: `Editora com id ${params.id} não encontrada` });
       }
-      return res.status(200).json({ message: "editora excluída" });
+      return res.status(200).json({ message: 'editora excluída' });
     } catch (err) {
       return res.status(500).json(err.message);
     }
