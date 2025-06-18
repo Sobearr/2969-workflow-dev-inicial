@@ -8,6 +8,7 @@ export async function seed(knex) {
   await knex.raw('TRUNCATE TABLE livros RESTART IDENTITY CASCADE');
   await knex.raw('TRUNCATE TABLE editoras RESTART IDENTITY CASCADE');
   await knex.raw('TRUNCATE TABLE autores RESTART IDENTITY CASCADE');
+  await knex.raw('TRUNCATE TABLE eventos RESTART IDENTITY CASCADE');
   await knex('autores').insert([
     {
       nome: 'K. Johnson',
@@ -57,6 +58,20 @@ export async function seed(knex) {
       paginas: 345,
       editora_id: 3,
       autor_id: 3,
+    },
+  ]);
+  await knex('eventos').insert([
+    {
+      nome: 'Evento do Autor 1',
+      descricao: 'Um evento mock para o autor 1',
+      data: '2025-06-18',
+      autor_id: 1,
+    },
+    {
+      nome: 'Evento do Autor 2',
+      descricao: 'Um evento mock para o autor 2',
+      data: '2025-06-19',
+      autor_id: 2,
     },
   ]);
 }
