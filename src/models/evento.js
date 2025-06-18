@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable camelcase */
-// import db from '../db/dbconfig.js';
+import db from '../db/dbconfig.js';
 
 class Evento {
   constructor({
@@ -22,15 +22,45 @@ class Evento {
   }
 
   static async pegaEventos() {
-    return [{
-      id: 1,
-      nome: 'lancamento',
-      descricao: 'descricao',
-      data: '2023-01-01',
-      autor_id: 1,
-      created_at: '2023-01-01 07:00:00',
-      updated_at: '2023-01-01 07:00:00',
-    }];
+    return db.select('*').from('eventos');
+  }
+
+  static async pegarPeloId(id) {
+    const resultado = await db.select('*').from('eventos').where({ id });
+    return resultado[0];
+  }
+
+  async criar() {
+    const novoEvento = {
+      nome: this.nome,
+      descricao: this.descricao,
+      data: this.data,
+      autor_id: this.autor_id,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+    };
+    return db('eventos').insert(novoEvento);
+  }
+
+  async atualizar(id) {
+    await db('eventos')
+      .where({ id })
+      .update({ ...this, updated_at: new Date().toISOString() });
+
+    return db.select('*').from('eventos').where({ id });
+  }
+
+  static async excluir(id) {
+    return db('eventos').where({ id }).del();
+  }
+
+  async salvar() {
+    if (this.id) {
+      const resultado = await this.atualizar(this.id);
+      return resultado;
+    }
+    const resultado = await this.criar();
+    return resultado;
   }
 }
 
