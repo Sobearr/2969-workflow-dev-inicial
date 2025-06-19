@@ -39,7 +39,7 @@ class Evento {
       created_at: this.created_at,
       updated_at: this.updated_at,
     };
-    return db('eventos').insert(novoEvento);
+    return db('eventos').returning('id').insert(novoEvento);
   }
 
   async atualizar(id) {
