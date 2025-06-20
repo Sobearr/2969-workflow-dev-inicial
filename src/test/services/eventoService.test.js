@@ -1,7 +1,12 @@
 import {
   describe, expect, it,
 } from '@jest/globals';
+import db from '../../db/dbconfig.js';
 import EventoService from '../../services/eventoService.js';
+
+afterAll(() => {
+  db.destroy();
+});
 
 describe('Testando EventoService', () => {
   const eventoService = new EventoService();
