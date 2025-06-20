@@ -3,9 +3,7 @@ import db from '../db/dbconfig.js';
 
 class EventoService {
   async pegaEventos() {
-    // const eventos = db.select('*').from('eventos');
     return db.select('*').from('eventos');
-    // return eventos;
   }
 
   async pegarPeloId(id) {
