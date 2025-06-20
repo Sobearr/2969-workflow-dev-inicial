@@ -1,9 +1,12 @@
 import Evento from '../models/evento.js';
+import EventoService from '../services/eventoService.js';
+
+const eventoService = new EventoService();
 
 class EventosController {
   static listarEventos = async (_, res) => {
     try {
-      const resultado = await Evento.pegaEventos();
+      const resultado = await eventoService.pegaEventos();
       return res.status(200).json(resultado);
     } catch (err) {
       return res.status(500).json(err.message);
@@ -13,7 +16,7 @@ class EventosController {
   static listarEventoPorId = async (req, res) => {
     const { params } = req;
     try {
-      const resultado = await Evento.pegarPeloId(params.id);
+      const resultado = await eventoService.pegarPeloId(params.id);
       if (!resultado) {
         return res
           .status(404)
@@ -32,7 +35,7 @@ class EventosController {
       if (Object.keys(body).length === 0) {
         throw new Error('corpo da requisição vazio');
       }
-      await evento.salvar(evento);
+      await eventoService.salvar(evento);
       return res.status(201).json({ message: 'evento criado' });
     } catch (err) {
       if (err.message === 'corpo da requisição vazio') {
@@ -46,14 +49,14 @@ class EventosController {
     const { params } = req;
     const { body } = req;
     try {
-      const eventoAtual = await Evento.pegarPeloId(params.id);
+      const eventoAtual = await eventoService.pegarPeloId(params.id);
       if (!eventoAtual) {
         return res
           .status(404)
           .json({ message: `id ${params.id} não encontrado` });
       }
       const novoEvento = new Evento({ ...eventoAtual, ...body });
-      const resposta = await novoEvento.salvar(novoEvento);
+      const resposta = await eventoService.salvar(novoEvento);
       return res
         .status(200)
         .json({ message: 'evento atualizado', content: resposta });
@@ -65,7 +68,7 @@ class EventosController {
   static excluirEvento = async (req, res) => {
     const { params } = req;
     try {
-      const eventoFoiDeletado = await Evento.excluir(params.id);
+      const eventoFoiDeletado = await eventoService.excluir(params.id);
       if (!eventoFoiDeletado) {
         return res
           .status(404)
