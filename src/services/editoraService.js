@@ -1,39 +1,38 @@
 /* eslint-disable class-methods-use-this */
 import db from '../db/dbconfig.js';
 
-class EventoService {
-  async pegaEventos() {
-    return db.select('*').from('eventos');
+class EditoraService {
+  async pegarEditoras() {
+    return db.select('*').from('editoras');
   }
 
   async pegarPeloId(id) {
-    const resultado = await db.select('*').from('eventos').where({ id });
+    const resultado = await db.select('*').from('editoras').where({ id });
     return resultado[0];
   }
 
   async criar(dto) {
-    const novoEvento = {
+    const novaEditora = {
       nome: dto.nome,
-      descricao: dto.descricao,
-      data: dto.data,
-      autor_id: dto.autor_id,
+      cidade: dto.cidade,
+      email: dto.email,
       created_at: dto.created_at,
       updated_at: dto.updated_at,
     };
-    return db('eventos').returning('id').insert(novoEvento);
+    return db('editoras').returning('id').insert(novaEditora);
   }
 
   async atualizar(dto) {
     const id = dto.id;
-    await db('eventos')
+    await db('editoras')
       .where({ id })
       .update({ ...dto, updated_at: new Date().toISOString() });
 
-    return db.select('*').from('eventos').where({ id });
+    return db.select('*').from('editoras').where({ id });
   }
 
   async excluir(id) {
-    return db('eventos').where({ id }).del();
+    return db('editoras').where({ id }).del();
   }
 
   async salvar(dto) {
@@ -46,4 +45,4 @@ class EventoService {
   }
 }
 
-export default EventoService;
+export default EditoraService;

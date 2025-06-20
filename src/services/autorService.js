@@ -1,39 +1,37 @@
 /* eslint-disable class-methods-use-this */
 import db from '../db/dbconfig.js';
 
-class EventoService {
-  async pegaEventos() {
-    return db.select('*').from('eventos');
+class AutorService {
+  async pegarAutores() {
+    return db.select('*').from('autores');
   }
 
   async pegarPeloId(id) {
-    const resultado = await db.select('*').from('eventos').where({ id });
+    const resultado = await db.select('*').from('autores').where({ id });
     return resultado[0];
   }
 
   async criar(dto) {
-    const novoEvento = {
+    const novoAutor = {
       nome: dto.nome,
-      descricao: dto.descricao,
-      data: dto.data,
-      autor_id: dto.autor_id,
+      nacionalidade: dto.nacionalidade,
       created_at: dto.created_at,
       updated_at: dto.updated_at,
     };
-    return db('eventos').returning('id').insert(novoEvento);
+    return db('autores').returning('id').insert(novoAutor);
   }
 
   async atualizar(dto) {
     const id = dto.id;
-    await db('eventos')
+    await db('autores')
       .where({ id })
       .update({ ...dto, updated_at: new Date().toISOString() });
 
-    return db.select('*').from('eventos').where({ id });
+    return db.select('*').from('autores').where({ id });
   }
 
   async excluir(id) {
-    return db('eventos').where({ id }).del();
+    return db('autores').where({ id }).del();
   }
 
   async salvar(dto) {
@@ -44,6 +42,10 @@ class EventoService {
     const resultado = await this.criar(dto);
     return resultado;
   }
+
+  async pegaLivrosPorAutor(autorId) {
+    return db('livros').where({ autor_id: autorId });
+  }
 }
 
-export default EventoService;
+export default AutorService;

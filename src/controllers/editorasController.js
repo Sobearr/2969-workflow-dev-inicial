@@ -1,9 +1,12 @@
 import Editora from '../models/editora.js';
+import EditoraService from '../services/editoraService.js';
+
+const editoraService = new EditoraService();
 
 class EditorasController {
   static listarEditoras = async (_, res) => {
     try {
-      const resultado = await Editora.pegarEditoras();
+      const resultado = await editoraService.pegarEditoras();
       return res.status(200).json(resultado);
     } catch (err) {
       return res.status(500).json(err.message);
@@ -13,7 +16,7 @@ class EditorasController {
   static listarEditoraPorId = async (req, res) => {
     const { params } = req;
     try {
-      const resultado = await Editora.pegarPeloId(params.id);
+      const resultado = await editoraService.pegarPeloId(params.id);
       if (!resultado) {
         return res
           .status(404)
@@ -32,7 +35,7 @@ class EditorasController {
       if (Object.keys(body).length === 0) {
         throw new Error('corpo da requisição vazio');
       }
-      await editora.salvar(editora);
+      await editoraService.salvar(editora);
       return res.status(201).json({ message: 'editora criada' });
     } catch (err) {
       if (err.message === 'corpo da requisição vazio') {
@@ -46,14 +49,14 @@ class EditorasController {
     const { params } = req;
     const { body } = req;
     try {
-      const editoraAtual = await Editora.pegarPeloId(params.id);
+      const editoraAtual = await editoraService.pegarPeloId(params.id);
       if (!editoraAtual) {
         return res
           .status(404)
           .json({ message: `id ${params.id} não encontrado` });
       }
       const novaEditora = new Editora({ ...editoraAtual, ...body });
-      const resposta = await novaEditora.salvar(novaEditora);
+      const resposta = await editoraService.salvar(novaEditora);
       return res
         .status(200)
         .json({ message: 'editora atualizada', content: resposta });
@@ -65,7 +68,7 @@ class EditorasController {
   static excluirEditora = async (req, res) => {
     const { params } = req;
     try {
-      const editoraFoiDeletada = await Editora.excluir(params.id);
+      const editoraFoiDeletada = await editoraService.excluir(params.id);
       if (!editoraFoiDeletada) {
         return res
           .status(404)
@@ -80,8 +83,8 @@ class EditorasController {
   static listarLivrosPorEditora = async (req, res) => {
     const { params } = req;
     try {
-      const resultado = await Editora.pegarPeloId(params.id);
-      const listaLivros = await Editora.pegarLivrosPorEditora(params.id);
+      const resultado = await editoraService.pegarPeloId(params.id);
+      const listaLivros = await editoraService.pegarLivrosPorEditora(params.id);
       return res
         .status(200)
         .json({ editora: resultado[0], livros: listaLivros });

@@ -1,9 +1,12 @@
 import Livro from '../models/livro.js';
+import LivroService from '../services/livroService.js';
+
+const livroService = new LivroService();
 
 class LivrosController {
   static listarLivros = async (_, res) => {
     try {
-      const resultado = await Livro.pegarLivros();
+      const resultado = await livroService.pegarLivros();
       return res.status(200).json(resultado);
     } catch (err) {
       return res.status(500).json(err.message);
@@ -13,7 +16,7 @@ class LivrosController {
   static listarLivroPorId = async (req, res) => {
     const { params } = req;
     try {
-      const resultado = await Livro.pegarPeloId(params.id);
+      const resultado = await livroService.pegarPeloId(params.id);
       if (!resultado) {
         return res
           .status(404)
@@ -32,7 +35,7 @@ class LivrosController {
       if (Object.keys(body).length === 0) {
         throw new Error('corpo da requisição vazio');
       }
-      await livro.salvar(livro);
+      await livroService.salvar(livro);
       return res.status(201).json({ message: 'livro criado' });
     } catch (err) {
       if (err.message === 'corpo da requisição vazio') {
@@ -46,14 +49,14 @@ class LivrosController {
     const { params } = req;
     const { body } = req;
     try {
-      const livroAtual = await Livro.pegarPeloId(params.id);
+      const livroAtual = await livroService.pegarPeloId(params.id);
       if (!livroAtual) {
         return res
           .status(404)
           .json({ message: `id ${params.id} não encontrado` });
       }
       const novoLivro = new Livro({ ...livroAtual, ...body });
-      const resposta = await novoLivro.salvar(novoLivro);
+      const resposta = await livroService.salvar(novoLivro);
       return res
         .status(200)
         .json({ message: 'livro atualizado', content: resposta });
@@ -65,7 +68,7 @@ class LivrosController {
   static excluirLivro = async (req, res) => {
     const { params } = req;
     try {
-      const livroFoiDeletado = await Livro.excluir(params.id);
+      const livroFoiDeletado = await livroService.excluir(params.id);
       if (!livroFoiDeletado) {
         return res
           .status(404)
