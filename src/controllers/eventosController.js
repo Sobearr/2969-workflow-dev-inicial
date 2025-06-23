@@ -1,13 +1,16 @@
 import Evento from '../models/evento.js';
 import EventoService from '../services/eventoService.js';
+import unleash from '../services/unleash.js';
 
 const eventoService = new EventoService();
 
 class EventosController {
-  static permissaoParaListar = () => process.env.EVENTO_FLAG === 'true';
+  // Testing unleash implementation
+  static liberaAcessoEventos = () => unleash.isEnabled('eventos');
 
   static listarEventos = async (_, res) => {
-    if (this.permissaoParaListar()) {
+    // Unleash feature flag
+    if (this.liberaAcessoEventos()) {
       try {
         const resultado = await eventoService.pegaEventos();
         return res.status(200).json(resultado);
