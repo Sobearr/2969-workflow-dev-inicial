@@ -4,13 +4,19 @@ import EventoService from '../services/eventoService.js';
 const eventoService = new EventoService();
 
 class EventosController {
+  static permissaoParaListar = () => process.env.EVENTO_FLAG === 'true';
+
   static listarEventos = async (_, res) => {
-    try {
-      const resultado = await eventoService.pegaEventos();
-      return res.status(200).json(resultado);
-    } catch (err) {
-      return res.status(500).json(err.message);
+    if (this.permissaoParaListar()) {
+      try {
+        const resultado = await eventoService.pegaEventos();
+        return res.status(200).json(resultado);
+      } catch (err) {
+        return res.status(500).json(err.message);
+      }
     }
+
+    return res.status(404).send();
   };
 
   static listarEventoPorId = async (req, res) => {
